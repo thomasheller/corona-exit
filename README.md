@@ -1,4 +1,4 @@
-# Corona exit calculator
+# corona-tools
 
 License: Public domain
 
