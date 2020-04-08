@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<title>Corona-Exit-Rechner</title>
+		<style type="text/css">
+			#ce-results {
+				display: none;
+			}
+		</style>
+		<script type="text/javascript">
+			function ce_calc() {
+				var cases_today = $("#ce-input-cases-today").val();
+				var unreported_factor = $("#ce-input-unreported-factor").val();
+				var total_population = $("#ce-input-total-population").val();
+				var r0 = $("#ce-input-r0").val();
+				var intensive_percent = $("#ce-input-intensive-percent").val() / 100;
+				var intensive_beds = $("#ce-input-intensive-beds").val();
+				var intensive_days = $("#ce-input-intensive-days").val();
+
+				console.log('calculating...');
+				console.log('cases_today', cases_today);
+				console.log('unreported_factor', unreported_factor);
+				console.log('total_population', total_population);
+				console.log('r0', r0);
+				console.log('intensive_percent', intensive_percent);
+				console.log('intensive_beds', intensive_beds);
+				console.log('intensive_days', intensive_days);
+
+				var result_assumed_today = cases_today * unreported_factor;
+				var result_immune_percent = 1-(1/r0);
+				var result_immune_total = total_population * result_immune_percent;
+				var result_diff_today = result_immune_total - result_assumed_today;
+				var result_intensive_remaining = result_diff_today * intensive_percent;
+				var result_intensive_daily = intensive_beds / intensive_days;
+				var result_days = result_intensive_remaining / result_intensive_daily;
+				var result_years = result_days / 365.25;
+
+				$("#ce-result-days").text(Math.round(result_days));
+				$("#ce-result-years").text(result_years.toFixed(2));
+				$("#ce-result-assumed-today").text(Math.round(result_assumed_today));
+				$("#ce-result-immune-percent").text(Math.round(result_immune_percent * 100) + '%');
+				$("#ce-result-immune-total").text(Math.round(result_immune_total));
+				$("#ce-result-diff-today").text(Math.round(result_diff_today));
+				$("#ce-result-intensive-remaining").text(Math.round(result_intensive_remaining));
+				$("#ce-result-intensive-daily").text(Math.round(result_intensive_daily));
+
+				$('#ce-results').show();
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<h1>Corona-Exit-Rechner</h1>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="ce-input-cases-today">Fälle heute</label>
+						<input type="number" min="1" step="1" class="form-control" id="ce-input-cases-today" aria-describedby="" placeholder="help-ce-input-cases-today" value="100000">
+						<small id="help-ce-input-cases-today" class="form-text text-muted">Die Gesamtzahl der bis heute bestätigen Fälle.</small>
+					</div>
+
+					<div class="form-group">
+						<label for="ce-input-unreported-factor">Dunkelziffer-Faktor</label>
+						<input type="number" min="1" step="0.01" class="form-control" id="ce-input-unreported-factor" aria-describedby="" placeholder="help-ce-input-unreported-factor" value="5">
+						<small id="help-ce-input-unreported-factor" class="form-text text-muted">Um wie viel mehr tatsächliche Fälle werden vermutet?</small>
+					</div>
+
+					<div class="form-group">
+						<label for="ce-input-total-population">Gesamtbevölkerung</label>
+						<input type="number" min="1" step="1" class="form-control" id="ce-input-total-population" aria-describedby="" plahelp-ceholder="ce-input-total-population" value="83020000">
+						<small id="help-ce-input-total-population" class="form-text text-muted">Die Gesamtzahl der im betrachteten Gebiet lebenden Personen.</small>
+					</div>
+
+					<div class="form-group">
+						<label for="ce-input-r0">Basisreproduktionszahl R<sub>0</sub></label>
+						<input type="number" min="0" step="0.01" class="form-control" id="ce-input-r0" aria-describedby="" plahelp-ceholder="ce-input-r0" value="3">
+						<small id="help-ce-input-r0" class="form-text text-muted">Wie viele weitere Personen werden im Durchschnitt durch eine infizierte Person angesteckt (<em>ohne</em> Social Distancing)?</small>
+					</div>
+
+					<div class="form-group">
+						<label for="ce-input-intensive-percent">Intensivpflichtige (Anteil)</label>
+						<input type="number" min="0" step="0.01" class="form-control" id="ce-input-intensive-percent" aria-describedby="" placeholder="help-ce-input-intensive-percent" value="5">
+						<small id="help-ce-input-intensive-percent" class="form-text text-muted">Wie viel Prozent der Erkrankten benötigen intensivmedizinische Betreuung?</small>
+					</div>
+
+					<div class="form-group">
+						<label for="ce-input-intensive-beds">Intensivplätze</label>
+						<input type="number" min="0" step="1" class="form-control" id="ce-input-intensive-beds" aria-describedby="" plahelp-ceholder="ce-input-intensive-beds" value="20000">
+						<small id="help-ce-input-intensive-beds" class="form-text text-muted">Wie viele Intensivbetreuungsplätze stehen für Infizierte zur Verfügung?</small>
+					</div>
+
+					<div class="form-group">
+						<label for="ce-input-intensive-days">Behandlungstage (Durchschnitt)</label>
+						<input type="number" min="0" step="1" class="form-control" id="ce-input-intensive-days" aria-describedby="" plahelp-ceholder="ce-input-intensive-days" value="10">
+						<small id="help-ce-input-intensive-days" class="form-text text-muted">Für wie viele Tage benötigen die intensivpflichtigen Patienten einen Intensivbetreuungsplatz?</small>
+					</div>
+
+					<button type="button" class="btn btn-primary mb-3" onclick="ce_calc()">Berechnen</button>
+				</div>
+
+				<div class="col-sm-6">
+					<div id="ce-results">
+						<div>Ergebnis:</div>
+						<div class="alert alert-info" role="alert">
+							Bei den angenommenen Betreuungskapazitäten müsste
+							die Verbreitung noch auf
+							<strong><span id="ce-result-days"></span> Tage</strong>
+							(<strong><span id="ce-result-years"></span> Jahre</strong>)
+							gestreckt werden, um eine Versorgung aller Patienten zu gewährleisten,
+							solange keine ursächliche Therapie oder Impfung zur Verfügung steht.
+						</div>
+						<div>Details:</div>
+						<div class="alert alert-info" role="alert">
+							<div>Heute vermutete Fälle inkl. Dunkelziffer: <strong><span id="ce-result-assumed-today"></span></strong></div>
+							<div>Bevölkerungsimmunität erreicht bei: <strong><span id="ce-result-immune-percent"></span></strong> &#x2259; <strong><span id="ce-result-immune-total"></span></strong></div>
+							<div>Differenz zur heutigen Dunkelziffer: <strong><span id="ce-result-diff-today"></span></strong></div>
+							<div>Noch erwartete intensivpflichtige Patienten: <strong><span id="ce-result-intensive-remaining"></span></strong></div>
+							<div>Intensivbetreuungskapazität pro Tag: <strong><span id="ce-result-intensive-daily"></span></strong></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<p><small>Diese Website dient ausschließlich der privaten Nutzung. Alle Angaben ohne Gewähr.</small></p>
+				</div>
+			</div>
+
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	</body>
+</html>
+
