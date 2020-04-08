@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<title>Corona-Häufigkeits-Rechner</title>
+		<style type="text/css">
+			#ce-results {
+				display: none;
+			}
+		</style>
+		<script type="text/javascript">
+			function ce_calc() {
+				var cases_today = $("#ce-input-cases-today").val();
+				var detection_rate = $("#ce-input-unreported-factor").val() / 100;
+				var total_population = $("#ce-input-total-population").val();
+
+				console.log('calculating...');
+				console.log('cases_today', cases_today);
+				console.log('detection_rate', detection_rate);
+				console.log('total_population', total_population);
+
+				var result_unreported_cases = cases_today / detection_rate;
+				var result_unreported_factor = 1 / detection_rate;
+				var result_percent_infected = result_unreported_cases / total_population;
+				var result_nth_person = total_population / result_unreported_cases;
+
+				console.log('result_unreported_cases', result_unreported_cases);
+				console.log('result_unreported_factor', result_unreported_factor);
+				console.log('result_percent_infected', result_percent_infected);
+				console.log('result_nth_person', result_nth_person);
+
+				$("#ce-result-unreported-cases").text(Math.round(result_unreported_cases));
+				$("#ce-result-unreported-factor").text(result_unreported_factor.toFixed(2));
+				$("#ce-result-percent-infected").text((result_percent_infected * 100).toFixed(2) + '%');
+				$("#ce-result-nth-person").text(Math.round(result_nth_person));
+
+				$('#ce-results').show();
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<h1><a href="../">↖</a> Corona-Häufigkeits-Rechner</h1>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label for="ce-input-cases-today">Fälle heute</label>
+						<input type="number" min="1" step="1" class="form-control" id="ce-input-cases-today" aria-describedby="help-ce-input-cases-today" placeholder="" value="234">
+						<small id="help-ce-input-cases-today" class="form-text text-muted">Die Gesamtzahl der bis heute bestätigen Fälle in einer Stadt oder einem Kreis.</small>
+					</div>
+
+					<div class="form-group">
+						<label for="ce-input-unreported-factor">Erkennungsrate (Prozent)</label>
+						<input type="number" min="1" step="0.01" class="form-control" id="ce-input-unreported-factor" aria-describedby="help-ce-input-unreported-factor" placeholder="" value="15">
+						<small id="help-ce-input-unreported-factor" class="form-text text-muted">Der Anteil der Fälle, der tatsächlich erkannt wird. Siehe auch: <a href="https://www.uni-goettingen.de/de/891.html?id=5855" target="_blank">https://www.uni-goettingen.de/de/891.html?id=5855</a></small>
+					</div>
+
+					<div class="form-group">
+						<label for="ce-input-total-population">Einwohner</label>
+						<input type="number" min="1" step="1" class="form-control" id="ce-input-total-population" aria-describedby="help-ce-input-total-population" placeholder="" value="313092">
+						<small id="help-ce-input-total-population" class="form-text text-muted">Die Gesamtzahl der im Einwohner in der Stadt oder dem Kreis.</small>
+					</div>
+
+					<button type="button" class="btn btn-primary mb-3" onclick="ce_calc()">Berechnen</button>
+				</div>
+
+				<div class="col-sm-6">
+					<div id="ce-results">
+						<div>Ergebnis:</div>
+						<div class="alert alert-info" role="alert">
+							Bei den angenommenen Erkennungsrate ist jede
+							<strong><span id="ce-result-nth-person"></span>. Person</strong>
+							in der betrachteten Region infiziert.
+						</div>
+						<div>Details:</div>
+						<div class="alert alert-info" role="alert">
+							<div>Fälle inkl. Dunkelziffer: <strong><span id="ce-result-unreported-cases"></span></strong></div>
+							<div>Faktor der Dunkelziffer: <strong><span id="ce-result-unreported-factor"></span></strong></div>
+							<div>Anteil Infizierter an der Bevölkerung: <strong><span id="ce-result-percent-infected"></span></strong></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<p><small>Diese Website dient ausschließlich der privaten Nutzung. Alle Angaben ohne Gewähr.</small></p>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	</body>
+</html>
+
