@@ -38,13 +38,26 @@
 				var result_days = result_intensive_remaining / result_intensive_daily;
 				var result_years = result_days / 365.25;
 
-				$("#ce-result-days").text(Math.round(result_days));
-				$("#ce-result-years").text(result_years.toFixed(2));
+				if(result_days > 0) {
+					$('#ce-result-case-1').show();
+					$('#ce-result-case-2').hide();
+
+					$("#ce-result-days").text(Math.round(result_days));
+					$("#ce-result-years").text(result_years.toFixed(2));
+
+					$("#ce-result-diff-today").text(Math.round(result_diff_today));
+					$("#ce-result-intensive-remaining").text(Math.round(result_intensive_remaining));
+				} else {
+					$('#ce-result-case-1').hide();
+					$('#ce-result-case-2').show();
+
+					$("#ce-result-diff-today").text('-');
+					$("#ce-result-intensive-remaining").text('-');
+				}
+
 				$("#ce-result-assumed-today").text(Math.round(result_assumed_today));
 				$("#ce-result-immune-percent").text(Math.round(result_immune_percent * 100) + '%');
 				$("#ce-result-immune-total").text(Math.round(result_immune_total));
-				$("#ce-result-diff-today").text(Math.round(result_diff_today));
-				$("#ce-result-intensive-remaining").text(Math.round(result_intensive_remaining));
 				$("#ce-result-intensive-daily").text(Math.round(result_intensive_daily));
 
 				$('#ce-results').show();
@@ -109,13 +122,19 @@
 				<div class="col-sm-6">
 					<div id="ce-results">
 						<div>Ergebnis:</div>
-						<div class="alert alert-info" role="alert">
+						<div class="alert alert-info" role="alert" id="ce-result-case-1">
 							Bei den angenommenen Betreuungskapazitäten müsste
 							die Verbreitung noch auf
 							<strong><span id="ce-result-days"></span> Tage</strong>
 							(<strong><span id="ce-result-years"></span> Jahre</strong>)
 							gestreckt werden, um eine Versorgung aller Patienten zu gewährleisten,
 							solange keine ursächliche Therapie oder Impfung zur Verfügung steht.
+						</div>
+						<div class="alert alert-info" role="alert" id="ce-result-case-2">
+							Die benötigte Anzahl der Infektionen, um eine Immunität
+							der Bevölkerung herzustellen, wurde bereits erreicht.
+							Es ist <strong>keine</strong> weitere Verlangsamung der
+							Verbreitung notwendig.
 						</div>
 						<div>Details:</div>
 						<div class="alert alert-info" role="alert">
